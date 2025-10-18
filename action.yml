@@ -1,10 +1,10 @@
-name: 'Composite Action Recipe'
-description: 'Greets the user and returns 42.'
+name: "Composite Action Recipe"
+description: "Greets the user and returns 42."
 inputs:
   who-to-greet:
-    description: 'Who to greet'
+    description: "Who to greet"
     required: true
-    default: 'World'
+    default: "World"
 outputs:
   answer:
     description: "Answer to life, the universe and evertything"
@@ -12,10 +12,18 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Awesome bash script action
-      id: deep-thought
-      shell: bash
-      run: |
-        echo "Hello '${{ inputs.who-to-greet }}'."
-        echo "answer=42" >> $GITHUB_OUTPUT
-        echo "So long, and thanks for all the fish."
+    - name: Awesome github script action
+      uses: actions/github-script@v8
+      with:
+        script: |
+          var whoToGreet = core.getInput('who-to-greet')
+          core.notice(`Hello ${whoToGreet}`)
+          core.setOutput('answer', 42)
+          if (context.eventName === 'issues') {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋🏻 Thanks for reporting!'
+            })
+          }
