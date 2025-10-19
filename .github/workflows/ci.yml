@@ -1,9 +1,9 @@
 name: CI Workflow
 on:
-  issues:
-    types: [opened]
   push:
   pull_request:
+  issues:
+    types: [opened]
 jobs:
   ci-job:
     runs-on: ubuntu-latest
